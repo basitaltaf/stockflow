@@ -13,7 +13,58 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <div class="app-container">
+  <!-- Login Screen Viewport -->
+  <div class="login-viewport" id="view-login" style="display: none;">
+    <div class="login-container">
+      <!-- Left Branding Panel (Red) -->
+      <div class="login-brand-panel">
+        <div class="brand-panel-content">
+          <svg class="brand-icon-large" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+          <h1 class="brand-title">StockFlow</h1>
+          <p class="brand-tagline">Inventory Management System</p>
+        </div>
+      </div>
+      
+      <!-- Right Form Panel -->
+      <div class="login-form-panel">
+        <div class="form-panel-header">
+          <h2>Sign In</h2>
+          <p>Enter your credentials to access your dashboard</p>
+        </div>
+        
+        <form id="login-form" autocomplete="on" novalidate>
+          <!-- Email Input -->
+          <div class="form-group">
+            <label for="login-email">Email Address <span class="required">*</span></label>
+            <input type="email" id="login-email" name="email" placeholder="e.g. admin@stockflow.com" autocomplete="username">
+            <span class="error-message" id="err-login-email"></span>
+          </div>
+          
+          <!-- Password Input -->
+          <div class="form-group">
+            <label for="login-password">Password <span class="required">*</span></label>
+            <input type="password" id="login-password" name="password" placeholder="••••••••" autocomplete="current-password">
+            <span class="error-message" id="err-login-password"></span>
+          </div>
+
+          <!-- Remember Me Checkbox -->
+          <div class="login-options">
+            <label class="checkbox-container">
+              <input type="checkbox" id="login-remember">
+              <span class="checkbox-checkmark"></span>
+              <span class="checkbox-label">Remember Me</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="btn-login">Sign In</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container" id="app-container" style="display: none;">
     
     <!-- Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
@@ -41,6 +92,12 @@
       
       <div class="sidebar-footer">
         <span class="user-role">Administrator</span>
+        <button class="btn-logout" id="btn-logout" aria-label="Sign Out">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+          <span>Sign Out</span>
+        </button>
       </div>
     </aside>
 
@@ -60,8 +117,9 @@
         </div>
       </header>
 
-      <!-- Dashboard Cards Section -->
-      <section class="metrics-grid">
+      <!-- Dashboard View Section -->
+      <div id="view-dashboard" class="view-section">
+        <section class="metrics-grid">
         <!-- Card 1: Total Products -->
         <div class="metric-card" id="card-total-products">
           <div class="metric-icon bg-blue-tint">
@@ -123,11 +181,14 @@
           </div>
           <div class="metric-info">
             <span class="metric-label">Inventory Value</span>
-            <h2 class="metric-value" id="val-total-value">$0.00</h2>
+            <h2 class="metric-value" id="val-total-value">₹0.00</h2>
           </div>
         </div>
       </section>
+      </div>
 
+      <!-- Products View Section -->
+      <div id="view-products" class="view-section">
       <!-- Search, Filters, and Actions Bar -->
       <section class="controls-bar">
         <div class="search-box">
@@ -210,6 +271,7 @@
           <button class="btn btn-outline" id="btn-empty-add">Add First Product</button>
         </div>
       </section>
+      </div>
 
     </main>
   </div>
@@ -260,7 +322,7 @@
 
           <!-- Price -->
           <div class="form-group">
-            <label for="field-price">Price ($) <span class="required">*</span></label>
+            <label for="field-price">Price (₹) <span class="required">*</span></label>
             <input type="number" id="field-price" name="price" step="0.01" min="0.01" placeholder="e.g. 49.99">
             <span class="error-message" id="err-price"></span>
           </div>

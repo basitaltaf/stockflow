@@ -2,38 +2,38 @@
    DESIGN TOKENS & SYSTEM DEFINITION
    ========================================================================== */
 :root {
-  /* Color Palette - Premium Dark Theme */
-  --bg-primary: #0b0f19;
-  --bg-secondary: #111827;
-  --bg-tertiary: #1f2937;
-  --bg-card: rgba(17, 24, 39, 0.7);
-  --border-color: rgba(255, 255, 255, 0.07);
-  --border-focus: #6366f1;
+  /* Color Palette - Premium Red & White Light Theme */
+  --bg-primary: #f4f6f8;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e5e7eb;
+  --bg-card: #ffffff;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-focus: #f22f2f;
 
-  --text-primary: #f9fafb;
-  --text-secondary: #9ca3af;
-  --text-muted: #6b7280;
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-muted: #9ca3af;
 
-  /* Accents */
-  --accent-primary: #6366f1; /* Indigo */
-  --accent-primary-hover: #4f46e5;
-  --accent-secondary: #818cf8;
+  /* Accents - Bright Vibrant Red matching login image */
+  --accent-primary: #f22f2f; 
+  --accent-primary-hover: #d31a1a;
+  --accent-secondary: #ff6b6b;
   
   /* Status Colors */
   --color-success: #10b981; /* Emerald */
-  --color-success-bg: rgba(16, 185, 129, 0.15);
+  --color-success-bg: rgba(16, 185, 129, 0.08);
   --color-warning: #f59e0b; /* Amber */
-  --color-warning-bg: rgba(245, 158, 11, 0.15);
+  --color-warning-bg: rgba(245, 158, 11, 0.08);
   --color-danger: #ef4444; /* Rose */
-  --color-danger-bg: rgba(239, 68, 68, 0.15);
+  --color-danger-bg: rgba(239, 68, 68, 0.08);
   --color-info: #3b82f6; /* Blue */
-  --color-info-bg: rgba(59, 130, 246, 0.15);
+  --color-info-bg: rgba(59, 130, 246, 0.08);
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
-  --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.15);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+  --shadow-glow: 0 0 15px rgba(242, 47, 47, 0.1);
 
   /* Layout Constants */
   --sidebar-width: 260px;
@@ -158,12 +158,12 @@ body {
 }
 
 .menu-item:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(0, 0, 0, 0.03);
   color: var(--text-primary);
 }
 
 .menu-item.active {
-  background-color: rgba(99, 102, 241, 0.1);
+  background-color: rgba(242, 47, 47, 0.08);
   color: var(--accent-primary);
   box-shadow: inset 4px 0 0 var(--accent-primary);
 }
@@ -173,10 +173,42 @@ body {
 }
 
 .sidebar-footer {
-  padding: 20px 24px;
+  padding: 16px 24px;
   border-top: 1px solid var(--border-color);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.user-role {
   font-size: 13px;
   color: var(--text-muted);
+  font-weight: 500;
+}
+
+.btn-logout {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 0;
+  transition: var(--transition-smooth);
+  width: fit-content;
+}
+
+.btn-logout svg {
+  width: 18px;
+  height: 18px;
+  transition: var(--transition-smooth);
+}
+
+.btn-logout:hover {
+  color: var(--accent-primary);
 }
 
 /* Main Content Wrapper */
@@ -290,11 +322,11 @@ body {
 }
 
 /* Colors for icon tints */
-.bg-blue-tint { background-color: rgba(59, 130, 246, 0.1); color: #60a5fa; }
-.bg-indigo-tint { background-color: rgba(99, 102, 241, 0.1); color: #818cf8; }
-.bg-warning-tint { background-color: rgba(245, 158, 11, 0.1); color: #fbbf24; }
-.bg-danger-tint { background-color: rgba(239, 68, 68, 0.1); color: #f87171; }
-.bg-success-tint { background-color: rgba(16, 185, 129, 0.1); color: #34d399; }
+.bg-blue-tint { background-color: rgba(59, 130, 246, 0.08); color: #2563eb; }
+.bg-indigo-tint { background-color: rgba(242, 47, 47, 0.08); color: #f22f2f; }
+.bg-warning-tint { background-color: rgba(245, 158, 11, 0.08); color: #b45309; }
+.bg-danger-tint { background-color: rgba(239, 68, 68, 0.08); color: #b91c1c; }
+.bg-success-tint { background-color: rgba(16, 185, 129, 0.08); color: #047857; }
 
 /* ==========================================================================
    CONTROLS BAR
@@ -419,7 +451,7 @@ body {
 }
 
 .btn-outline:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(0, 0, 0, 0.03);
   border-color: var(--text-secondary);
 }
 
@@ -431,7 +463,7 @@ body {
 
 .btn-text:hover {
   color: var(--text-primary);
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .btn-danger {
@@ -467,7 +499,7 @@ body {
 }
 
 .products-table th {
-  background-color: rgba(255, 255, 255, 0.01);
+  background-color: rgba(0, 0, 0, 0.015);
   padding: 16px 24px;
   color: var(--text-secondary);
   font-weight: 600;
@@ -489,7 +521,7 @@ body {
 }
 
 .products-table tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.015);
+  background-color: rgba(0, 0, 0, 0.015);
 }
 
 .products-table tbody tr:last-child td {
@@ -541,6 +573,7 @@ body {
 .btn-qty:hover {
   background-color: var(--accent-primary);
   border-color: var(--accent-primary);
+  color: #ffffff;
 }
 
 .qty-val {
@@ -564,7 +597,7 @@ body {
 }
 
 .action-btn:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.04);
 }
 
 .btn-edit:hover {
@@ -595,7 +628,7 @@ body {
   height: 80px;
   color: var(--text-muted);
   margin-bottom: 20px;
-  background-color: rgba(255, 255, 255, 0.015);
+  background-color: rgba(0, 0, 0, 0.02);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -692,7 +725,7 @@ body {
 }
 
 .btn-close:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(0, 0, 0, 0.05);
   color: var(--text-primary);
 }
 
@@ -963,5 +996,193 @@ body {
 
   .modal-content {
     padding: 24px 16px;
+  }
+}
+
+/* ==========================================================================
+   LOGIN SCREEN VIEWPORT & CARD STYLES
+   ========================================================================== */
+.login-viewport {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-primary);
+  z-index: 9999;
+  padding: 20px;
+}
+
+.login-container {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  max-width: 960px;
+  width: 100%;
+  min-height: 580px;
+  background-color: var(--bg-secondary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+/* Left Brand Panel (Vibrant Red Accent) */
+.login-brand-panel {
+  background: linear-gradient(135deg, #f22f2f 0%, #b91c1c 100%);
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  text-align: center;
+  position: relative;
+}
+
+.brand-panel-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand-icon-large {
+  width: 72px;
+  height: 72px;
+  color: #ffffff;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.15));
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.brand-title {
+  font-size: 42px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.brand-tagline {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 500;
+}
+
+/* Right Form Panel (White) */
+.login-form-panel {
+  padding: 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--bg-secondary);
+}
+
+.form-panel-header {
+  margin-bottom: 32px;
+}
+
+.form-panel-header h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.form-panel-header p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.btn-block {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+}
+
+/* Remember Me Checkbox */
+.login-options {
+  margin: 18px 0 24px 0;
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  user-select: none;
+}
+
+.checkbox-container input {
+  display: none;
+}
+
+.checkbox-checkmark {
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background-color: var(--bg-primary);
+  display: inline-block;
+  position: relative;
+  transition: var(--transition-smooth);
+}
+
+.checkbox-container input:checked + .checkbox-checkmark {
+  background-color: var(--accent-primary);
+  border-color: var(--accent-primary);
+}
+
+.checkbox-container input:checked + .checkbox-checkmark::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 4px;
+  height: 9px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Responsive Login screen */
+@media (max-width: 768px) {
+  .login-container {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    max-width: 420px;
+  }
+  
+  .login-brand-panel {
+    padding: 32px 24px;
+    height: 160px;
+  }
+  
+  .brand-icon-large {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .brand-title {
+    font-size: 26px;
+  }
+  
+  .brand-tagline {
+    font-size: 13px;
+  }
+  
+  .login-form-panel {
+    padding: 32px 24px;
   }
 }

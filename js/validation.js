@@ -57,3 +57,44 @@ export function validateProduct(productData) {
     errors
   };
 }
+
+/**
+ * Validate login input fields format (non-empty & email regex).
+ * @param {string} email - Email value
+ * @param {string} password - Password value
+ * @returns {Object} Validation result containing isValid (boolean) and errors (object mapping field names to error messages)
+ */
+export function validateLoginInput(email, password) {
+  const errors = {};
+  const trimmedEmail = email ? email.trim() : '';
+
+  if (!trimmedEmail) {
+    errors.email = 'Email address is required.';
+  } else {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(trimmedEmail)) {
+      errors.email = 'Please enter a valid email address.';
+    }
+  }
+
+  if (!password) {
+    errors.password = 'Password is required.';
+  }
+
+  return {
+    isValid: Object.keys(errors).length === 0,
+    errors
+  };
+}
+
+/**
+ * Verify credentials against demo admin credentials.
+ * @param {string} email - User email address
+ * @param {string} password - User password
+ * @returns {boolean} True if authenticated successfully
+ */
+export function verifyDemoCredentials(email, password) {
+  const demoEmail = 'admin@stockflow.com';
+  const demoPassword = 'stockflow123';
+  return email.trim().toLowerCase() === demoEmail && password === demoPassword;
+}

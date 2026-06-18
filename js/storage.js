@@ -27,7 +27,43 @@ function generateUniqueId() {
 export function getAllProducts() {
   try {
     const data = localStorage.getItem(STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+    if (data) {
+      return JSON.parse(data);
+    }
+
+    // Seed mock products if database is empty (first-time visitor UX)
+    const mockProducts = [
+      {
+        id: 'PRD-MAC16P',
+        name: 'MacBook Pro 16"',
+        category: 'Electronics',
+        price: 2499.00,
+        quantity: 15,
+        supplier: 'Apple Inc.',
+        dateAdded: new Date().toISOString().split('T')[0]
+      },
+      {
+        id: 'PRD-HERMCH',
+        name: 'Ergonomic Office Chair',
+        category: 'Furniture',
+        price: 349.99,
+        quantity: 4, // Low Stock (<= 10)
+        supplier: 'Herman Miller Inc.',
+        dateAdded: new Date().toISOString().split('T')[0]
+      },
+      {
+        id: 'PRD-KEYCHB',
+        name: 'Mechanical Gaming Keyboard',
+        category: 'Electronics',
+        price: 129.00,
+        quantity: 0, // Out of Stock
+        supplier: 'Keychron Ltd.',
+        dateAdded: new Date().toISOString().split('T')[0]
+      }
+    ];
+
+    saveAllProducts(mockProducts);
+    return mockProducts;
   } catch (error) {
     console.error('Error reading from localStorage:', error);
     return [];

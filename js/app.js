@@ -1,5 +1,5 @@
 import * as storage from './storage.js';
-import { validateProduct } from './validation.js';
+import { validateProduct, validateLoginInput, verifyDemoCredentials } from './validation.js';
 import * as ui from './ui.js';
 
 // Application State Variables
@@ -95,7 +95,13 @@ function initApp() {
     dateElement.textContent = new Date().toLocaleDateString('en-US', options);
   }
 
-  // Load initial view
+  // Initially show login viewport and hide app container (session persistence in Phase 7.2)
+  const loginView = document.getElementById('view-login');
+  const appContainer = document.getElementById('app-container');
+  if (loginView) loginView.style.display = 'flex';
+  if (appContainer) appContainer.style.display = 'none';
+
+  // Load initial products (but keep hidden until logged in)
   refreshApp();
 
   // Setup Event Listeners
@@ -123,13 +129,35 @@ function setupEventListeners() {
     });
   }
 
-  // 2. Sidebar Navigation Items (Visual indicator logic)
+  // 2. Sidebar Navigation Items (Tab Switch logic)
   const menuItems = document.querySelectorAll('.menu-item');
+  const viewDashboard = document.getElementById('view-dashboard');
+  const viewProducts = document.getElementById('view-products');
+  const headerTitle = document.querySelector('.content-header h1');
+
   menuItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
+      
+      // Toggle Active States in Sidebar
       menuItems.forEach(i => i.classList.remove('active'));
       item.classList.add('active');
+
+      // Toggle Views & Headers
+      if (item.id === 'menu-dashboard') {
+        if (viewDashboard) viewDashboard.style.display = 'block';
+        if (viewProducts) viewProducts.style.display = 'block'; // Keep products visible on Dashboard view
+        if (headerTitle) headerTitle.textContent = 'Dashboard Overview';
+      } else if (item.id === 'menu-products') {
+        if (viewDashboard) viewDashboard.style.display = 'none'; // Hide dashboard cards on Products view
+        if (viewProducts) viewProducts.style.display = 'block'; // Show products on Products view
+        if (headerTitle) headerTitle.textContent = 'Products Inventory';
+      }
+
+      // Auto-close sidebar on mobile after clicking item
+      if (sidebar && sidebar.classList.contains('open')) {
+        sidebar.classList.remove('open');
+      }
     });
   });
 
@@ -344,6 +372,49 @@ function setupEventListeners() {
           ui.showToast(`Stock decreased for "${product.name}".`, 'success');
         }
       }
+    });
+  }
+
+  // 8. Login Form Submission Handler
+  const loginForm = document.getElementById('login-form');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+
+      // Clear previous error messages
+      ui.clearLoginErrors();
+
+      // Validate inputs structure
+      const validation = validateLoginInput(email, password);
+      if (!validation.isValid) {
+        ui.displayLoginErrors(validation.errors);
+        return;
+      }
+
+      // Check credentials against demo account
+      const isAuthenticated = verifyDemoCredentials(email, password);
+      if (!isAuthenticated) {
+        ui.displayLoginErrors({
+          email: 'Invalid email address or password.',
+          password: 'Invalid email address or password.'
+        });
+        ui.showToast('Authentication failed. Check credentials.', 'danger');
+        return;
+      }
+
+      // Successful auth toast
+      ui.showToast('Authenticated successfully!', 'success');
+
+      // Temporary switch view (Full localStorage persistence in Phase 7.2!)
+      const loginView = document.getElementById('view-login');
+      const appContainer = document.getElementById('app-container');
+      if (loginView) loginView.style.display = 'none';
+      if (appContainer) appContainer.style.display = 'flex';
+
+      refreshApp();
     });
   }
 }

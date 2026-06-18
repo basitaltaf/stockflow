@@ -42,13 +42,13 @@ export function showToast(message, type = 'success') {
 
   container.appendChild(toast);
 
-  // Auto-dismiss: start fade-out after 3s, remove from DOM after 3.3s
+  // Auto-dismiss: start fade-out after 2s, remove from DOM after 2.3s
   setTimeout(() => {
     toast.classList.add('fade-out');
-    toast.addEventListener('transitionend', () => {
+    setTimeout(() => {
       toast.remove();
-    });
-  }, 3000);
+    }, 300); // wait 300ms for CSS transition to finish
+  }, 2000);
 }
 
 // ==========================================================================
@@ -82,9 +82,9 @@ export function updateDashboardMetrics(products) {
   document.getElementById('val-total-stock').textContent = totalStock.toLocaleString();
   document.getElementById('val-low-stock').textContent = lowStockCount.toLocaleString();
   document.getElementById('val-out-stock').textContent = outOfStockCount.toLocaleString();
-  document.getElementById('val-total-value').textContent = new Intl.NumberFormat('en-US', {
+  document.getElementById('val-total-value').textContent = new Intl.NumberFormat('en-IN', {
     style: 'currency',
-    currency: 'USD'
+    currency: 'INR'
   }).format(totalValue);
 
   // Update visual alerts (glows/borders) if metrics have alerts
@@ -174,9 +174,9 @@ export function renderProductsTable(products) {
 
   tbody.innerHTML = products.map(product => {
     const status = getStockStatusInfo(product.quantity);
-    const formattedPrice = new Intl.NumberFormat('en-US', {
+    const formattedPrice = new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'INR'
     }).format(product.price);
 
     return `
@@ -272,4 +272,39 @@ function escapeHTML(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+}
+
+/**
+ * Show validation errors on the login form.
+ * @param {Object} errors - Error object mapping field names to error messages
+ */
+export function displayLoginErrors(errors) {
+  clearLoginErrors();
+
+  Object.entries(errors).forEach(([field, msg]) => {
+    const input = document.getElementById(`login-${field}`);
+    const errSpan = document.getElementById(`err-login-${field}`);
+
+    if (input) {
+      input.parentElement.classList.add('has-error');
+    }
+    if (errSpan) {
+      errSpan.textContent = msg;
+    }
+  });
+}
+
+/**
+ * Clear validation errors from the login form.
+ */
+export function clearLoginErrors() {
+  const emailInput = document.getElementById('login-email');
+  const passwordInput = document.getElementById('login-password');
+  const errEmail = document.getElementById('err-login-email');
+  const errPassword = document.getElementById('err-login-password');
+
+  if (emailInput) emailInput.parentElement.classList.remove('has-error');
+  if (passwordInput) passwordInput.parentElement.classList.remove('has-error');
+  if (errEmail) errEmail.textContent = '';
+  if (errPassword) errPassword.textContent = '';
 }
