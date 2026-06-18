@@ -88,23 +88,56 @@ export function refreshApp() {
  * Initialize application events, date, and initial state rendering.
  */
 function initApp() {
-  // Set current date in the header
+  // 1. Load and apply persisted theme first before rendering to avoid visual flashes
+  const savedTheme = storage.getTheme();
+  ui.updateThemeUI(savedTheme);
+
+  // 2. Set current date in the header
   const dateElement = document.getElementById('current-date');
   if (dateElement) {
     const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     dateElement.textContent = new Date().toLocaleDateString('en-US', options);
   }
 
-  // Initially show login viewport and hide app container (session persistence in Phase 7.2)
+  // 3. Perform immediate authentication check on load
+  const session = storage.getSession();
   const loginView = document.getElementById('view-login');
   const appContainer = document.getElementById('app-container');
-  if (loginView) loginView.style.display = 'flex';
-  if (appContainer) appContainer.style.display = 'none';
 
-  // Load initial products (but keep hidden until logged in)
-  refreshApp();
+  if (session && session.isLoggedIn) {
+    const currentTime = Math.floor(Date.now() / 1000);
+    if (session.expiresAt > currentTime) {
+      // Valid session -> grant dashboard access
+      if (loginView) loginView.style.display = 'none';
+      if (appContainer) appContainer.style.display = 'flex';
+      
+      // Load table sort preference
+      const savedSort = storage.getSortPreference();
+      const sortSelect = document.getElementById('sort-by');
+      if (sortSelect) sortSelect.value = savedSort;
 
-  // Setup Event Listeners
+      // Load sidebar state preference
+      const savedSidebar = storage.getSidebarPreference();
+      const sidebar = document.getElementById('sidebar');
+      if (savedSidebar === 'collapsed' && sidebar) {
+        sidebar.classList.remove('open');
+      }
+
+      refreshApp();
+    } else {
+      // Expired session -> clear and force redirect
+      storage.clearSession();
+      if (loginView) loginView.style.display = 'flex';
+      if (appContainer) appContainer.style.display = 'none';
+      ui.showToast('Your session has expired. Please sign in again.', 'warning');
+    }
+  } else {
+    // No session -> block access
+    if (loginView) loginView.style.display = 'flex';
+    if (appContainer) appContainer.style.display = 'none';
+  }
+
+  // 4. Setup Event Listeners
   setupEventListeners();
 }
 
@@ -116,15 +149,24 @@ function setupEventListeners() {
   const mobileToggle = document.getElementById('mobile-toggle');
   const sidebar = document.getElementById('sidebar');
   if (mobileToggle && sidebar) {
+    // Restore sidebar state from preferences
+    const savedSidebar = storage.getSidebarPreference();
+    if (savedSidebar === 'open' && window.innerWidth > 768) {
+      sidebar.classList.add('open');
+    }
+
     mobileToggle.addEventListener('click', (e) => {
       e.stopPropagation();
       sidebar.classList.toggle('open');
+      // Save user sidebar collapse/expand state preference
+      storage.setSidebarPreference(sidebar.classList.contains('open') ? 'open' : 'collapsed');
     });
 
     // Close sidebar when clicking outside of it on mobile
     document.addEventListener('click', (e) => {
       if (sidebar.classList.contains('open') && !sidebar.contains(e.target) && e.target !== mobileToggle) {
         sidebar.classList.remove('open');
+        storage.setSidebarPreference('collapsed');
       }
     });
   }
@@ -179,7 +221,11 @@ function setupEventListeners() {
 
   const sortSelect = document.getElementById('sort-by');
   if (sortSelect) {
-    sortSelect.addEventListener('change', () => refreshApp());
+    sortSelect.addEventListener('change', (e) => {
+      // Save sort layout preference
+      storage.setSortPreference(e.target.value);
+      refreshApp();
+    });
   }
 
   // 4. Modals - Product Create & Update Form Toggles
@@ -383,6 +429,7 @@ function setupEventListeners() {
       
       const email = document.getElementById('login-email').value;
       const password = document.getElementById('login-password').value;
+      const rememberMe = document.getElementById('login-remember').checked;
 
       // Clear previous error messages
       ui.clearLoginErrors();
@@ -405,16 +452,65 @@ function setupEventListeners() {
         return;
       }
 
-      // Successful auth toast
-      ui.showToast('Authenticated successfully!', 'success');
+      // Save session in Local Storage
+      storage.setSession(rememberMe);
 
-      // Temporary switch view (Full localStorage persistence in Phase 7.2!)
+      // Successful auth toast
+      ui.showToast('Logged in successfully!', 'success');
+
+      // Swap viewports
       const loginView = document.getElementById('view-login');
       const appContainer = document.getElementById('app-container');
       if (loginView) loginView.style.display = 'none';
       if (appContainer) appContainer.style.display = 'flex';
 
+      // Load table sort preference
+      const savedSort = storage.getSortPreference();
+      const sortSelect = document.getElementById('sort-by');
+      if (sortSelect) sortSelect.value = savedSort;
+
       refreshApp();
+    });
+  }
+
+  // 9. Logout Button Handler
+  const logoutBtn = document.getElementById('btn-logout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      // Clear token
+      storage.clearSession();
+      ui.showToast('You have logged out successfully.', 'success');
+
+      // Clear login inputs
+      const emailInput = document.getElementById('login-email');
+      const passwordInput = document.getElementById('login-password');
+      const rememberInput = document.getElementById('login-remember');
+      if (emailInput) emailInput.value = '';
+      if (passwordInput) passwordInput.value = '';
+      if (rememberInput) rememberInput.checked = false;
+      ui.clearLoginErrors();
+
+      // Swap viewports
+      const loginView = document.getElementById('view-login');
+      const appContainer = document.getElementById('app-container');
+      if (loginView) loginView.style.display = 'flex';
+      if (appContainer) appContainer.style.display = 'none';
+    });
+  }
+
+  // 10. Dark Mode Theme Toggle Handler
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      const newTheme = isDark ? 'dark' : 'light';
+      
+      // Update Sun/Moon icon visibility and save
+      ui.updateThemeUI(newTheme);
+      storage.setTheme(newTheme);
+      
+      // Theme change success toast
+      ui.showToast(`Theme changed to ${newTheme} mode!`, 'success');
     });
   }
 }

@@ -308,3 +308,23 @@ export function clearLoginErrors() {
   if (errEmail) errEmail.textContent = '';
   if (errPassword) errPassword.textContent = '';
 }
+
+/**
+ * Toggle CSS dark-mode classes and icons on theme change.
+ * @param {'dark'|'light'} theme - Current active theme
+ */
+export function updateThemeUI(theme) {
+  const body = document.body;
+  const sunIcon = document.querySelector('.sun-icon');
+  const moonIcon = document.querySelector('.moon-icon');
+
+  if (theme === 'dark') {
+    body.classList.add('dark-mode');
+    if (sunIcon) sunIcon.style.display = 'block';
+    if (moonIcon) moonIcon.style.display = 'none';
+  } else {
+    body.classList.remove('dark-mode');
+    if (sunIcon) sunIcon.style.display = 'none';
+    if (moonIcon) moonIcon.style.display = 'block';
+  }
+}

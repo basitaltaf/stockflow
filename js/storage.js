@@ -167,3 +167,115 @@ export function deleteProduct(id) {
 
   return saveAllProducts(filteredProducts);
 }
+
+// ==========================================================================
+// SESSION MANAGEMENT HELPERS
+// ==========================================================================
+const AUTH_KEY = 'stockflow_auth_session';
+
+/**
+ * Save auth session token to Local Storage.
+ * Expiration: 7 days if rememberMe checked, 2 hours otherwise.
+ * @param {boolean} rememberMe - Whether to extend duration
+ */
+export function setSession(rememberMe) {
+  const loginTime = Math.floor(Date.now() / 1000); // Unix timestamp (sec)
+  const duration = rememberMe ? 7 * 24 * 60 * 60 : 2 * 60 * 60; // 7 days vs 2 hours
+  const expiresAt = loginTime + duration;
+
+  const session = {
+    isLoggedIn: true,
+    loginTime,
+    expiresAt
+  };
+
+  try {
+    localStorage.setItem(AUTH_KEY, JSON.stringify(session));
+    return true;
+  } catch (error) {
+    console.error('Error writing session to LocalStorage:', error);
+    return false;
+  }
+}
+
+/**
+ * Retrieve auth session token from Local Storage.
+ * @returns {Object|null} Auth session object or null
+ */
+export function getSession() {
+  try {
+    const data = localStorage.getItem(AUTH_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error('Error reading session from LocalStorage:', error);
+    return null;
+  }
+}
+
+/**
+ * Delete session token to execute sign out.
+ */
+export function clearSession() {
+  try {
+    localStorage.removeItem(AUTH_KEY);
+    return true;
+  } catch (error) {
+    console.error('Error clearing session from LocalStorage:', error);
+    return false;
+  }
+}
+
+// ==========================================================================
+// USER PREFERENCES PERSISTENCE HELPERS
+// ==========================================================================
+const THEME_KEY = 'stockflow_theme';
+const SORT_KEY = 'stockflow_sort_preference';
+const SIDEBAR_KEY = 'stockflow_sidebar_preference';
+
+/**
+ * Get saved theme preference.
+ * @returns {'dark'|'light'} Stored theme or light default
+ */
+export function getTheme() {
+  return localStorage.getItem(THEME_KEY) || 'light';
+}
+
+/**
+ * Save theme preference.
+ * @param {'dark'|'light'} theme - Chosen theme
+ */
+export function setTheme(theme) {
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+/**
+ * Get saved table sort preference.
+ * @returns {string} Sort preference or 'name-asc' default
+ */
+export function getSortPreference() {
+  return localStorage.getItem(SORT_KEY) || 'name-asc';
+}
+
+/**
+ * Save table sort preference.
+ * @param {string} sortType - Sort preference value
+ */
+export function setSortPreference(sortType) {
+  localStorage.setItem(SORT_KEY, sortType);
+}
+
+/**
+ * Get saved sidebar collapsed/open preference.
+ * @returns {'open'|'collapsed'} Sidebar state preference or open default
+ */
+export function getSidebarPreference() {
+  return localStorage.getItem(SIDEBAR_KEY) || 'open';
+}
+
+/**
+ * Save sidebar collapsed/open preference.
+ * @param {'open'|'collapsed'} state - Sidebar state
+ */
+export function setSidebarPreference(state) {
+  localStorage.setItem(SIDEBAR_KEY, state);
+}
