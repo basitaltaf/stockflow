@@ -136,7 +136,7 @@ function setupEventListeners() {
   // 3. Search, Filter, Sort Live Event Handlers
   const searchInput = document.getElementById('search-input');
   if (searchInput) {
-    searchInput.addEventListener('input', () => refreshApp());
+    searchInput.addEventListener('input', debounce(() => refreshApp(), 250));
   }
 
   const categoryFilter = document.getElementById('filter-category');
@@ -346,6 +346,22 @@ function setupEventListeners() {
       }
     });
   }
+}
+
+/**
+ * Debounce helper to limit excessive executions of a function.
+ * @param {Function} func - The function to execute
+ * @param {number} delay - The debounce timeout in milliseconds
+ * @returns {Function} Debounced function
+ */
+function debounce(func, delay = 250) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
 }
 
 // Start application when DOM is fully parsed
