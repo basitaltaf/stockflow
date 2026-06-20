@@ -26,6 +26,6 @@ A production-ready, client-side Inventory Management System built from scratch w
 
 1. Clone this repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/basitaltaf/stockflow.git
    ```
 2. Open `index.html` directly in your browser, or serve it using a local server extension (e.g., VS Code Live Server).
